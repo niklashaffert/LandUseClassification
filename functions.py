@@ -2,18 +2,15 @@ from numpy import vstack, random
 from pickle import dump, load
 from sklearn.ensemble import RandomForestClassifier
 
-@staticmethod
 def store_drive(object, path):
   with open(path, 'wb') as f:
       dump(object, f)
 
-@staticmethod
 def read_drive(path):
   with open(path, 'rb') as f:
       obj = load(f)
   return obj
 
-@staticmethod
 def predict_rf(df_train, df_pred, col):
     x = vstack(df_train[col].values)
     y = df_train['Label']
