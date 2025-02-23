@@ -3,7 +3,6 @@ from pickle import dump, load
 from sklearn.ensemble import RandomForestClassifier
 import torch
 import torch.nn as nn
-import timm
 
 def store_drive(object, path):
   with open(path, 'wb') as f:
