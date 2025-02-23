@@ -7,6 +7,6 @@ def store_drive(object, path):
 
 @staticmethod
 def read_drive(path):
-  with open(os.path.join(path), 'rb') as f:
+  with open(path, 'rb') as f:
       obj = load(f)
   return obj
