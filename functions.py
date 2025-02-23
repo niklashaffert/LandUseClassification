@@ -1,6 +1,8 @@
 from numpy import vstack, random
 from pickle import dump, load
 from sklearn.ensemble import RandomForestClassifier
+
+import numpy as np
 import torch
 import torch.nn as nn
 
