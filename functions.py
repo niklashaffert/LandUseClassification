@@ -1,13 +1,15 @@
 from pickle import dump, load
 
-@staticmethod
-def store_drive(object, path):
-  with open(path, 'wb') as f:
-      dump(object, f)
+class DriveStorage:
+    @staticmethod
+    def store_drive(object, path):
+        """Store an object to a file using pickle."""
+        with open(path, 'wb') as f:
+            dump(object, f)
 
-@staticmethod
-def read_drive(path):
-  with open(path, 'rb') as f:
-      obj = load(f)
-  return obj
-     
+    @staticmethod
+    def read_drive(path):
+        """Read an object from a file using pickle."""
+        with open(path, 'rb') as f:
+            obj = load(f)
+        return obj
