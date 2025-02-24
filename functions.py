@@ -15,7 +15,7 @@ def read_drive(path):
       obj = load(f)
   return obj
 
-def rf(df, col_predictor):
+def fit_rf(df, col_predictor):
     x = vstack(df[col_predictor].values)
     y = df['Label']
 
@@ -23,7 +23,7 @@ def rf(df, col_predictor):
     rf.fit(x, y)
     return rf
 
-def nn(df, col_predictor, num_epochs = 10):
+def fit_nn(df, col_predictor, num_epochs = 10):
   # Convert data to PyTorch tensors
   x = torch.tensor(np.vstack(df[col_predictor].values), dtype=torch.float32)
   y = torch.tensor(df['Label'].values, dtype=torch.long)
