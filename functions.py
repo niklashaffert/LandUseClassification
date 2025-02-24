@@ -1,37 +1,15 @@
-from numpy import vstack, random
-from pickle import dump, load
-from sklearn.ensemble import RandomForestClassifier
-
-import numpy as np
-import torch
-import torch.nn as nn
-
-def store_drive(object, path):
-  with open(path, 'wb') as f:
-      dump(object, f)
-
-def read_drive(path):
-  with open(path, 'rb') as f:
-      obj = load(f)
-  return obj
-
-def predict_rf(df_train, df_pred, col):
-    x = vstack(df_train[col].values)
-    y = df_train['Label']
-
-    x_validation = vstack(df_pred[col].values)
+def fit_rf(df, col_predictor):
+    x = vstack(df[col_predictor].values)
+    y = df['Label']
 
     rf = RandomForestClassifier(random_state = random.seed(1234))
     rf.fit(x, y)
-    pred = rf.predict(x_validation)
-    pred_proba = rf.predict_proba(x_validation)
-    return pred, pred_proba
+    return rf
 
-def predict_nn(df_train, df_pred, col_predictor, num_epochs = 10):
+def fit_nn(df, col_predictor, num_epochs = 10):
   # Convert data to PyTorch tensors
-  x_train = torch.tensor(np.vstack(df_train[col_predictor].values), dtype=torch.float32)
-  y_train = torch.tensor(df_train['Label'].values, dtype=torch.long)
-  x_pred = torch.tensor(np.vstack(df_pred[col_predictor].values), dtype=torch.float32)
+  x = torch.tensor(np.vstack(df[col_predictor].values), dtype=torch.float32)
+  y = torch.tensor(df['Label'].values, dtype=torch.long)
 
   # Define a simple neural network
   class Net(nn.Module):
@@ -48,8 +26,8 @@ def predict_nn(df_train, df_pred, col_predictor, num_epochs = 10):
       return x
 
   # Initialize the model, loss function, and optimizer
-  input_size = X_train.shape[1]
-  num_classes = len(df_train['Label'].unique())
+  input_size = x.shape[1]
+  num_classes = len(df['Label'].unique())
   model = Net(input_size, num_classes)
   criterion = nn.CrossEntropyLoss()
   optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -57,14 +35,10 @@ def predict_nn(df_train, df_pred, col_predictor, num_epochs = 10):
   # Train the model
   for epoch in range(num_epochs):
     optimizer.zero_grad()
-    outputs = model(x_train)
-    loss = criterion(outputs, y_train)
+    outputs = model(x)
+    loss = criterion(outputs, y)
     loss.backward()
     optimizer.step()
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
-
-  # Make predictions on the validation set
-  with torch.no_grad():
-    outputs = model(x_pred)
 
   return outputs
