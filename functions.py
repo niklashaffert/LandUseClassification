@@ -1,3 +1,20 @@
+from numpy import vstack, random
+from pickle import dump, load
+from sklearn.ensemble import RandomForestClassifier
+
+import numpy as np
+import torch
+import torch.nn as nn
+
+def store_drive(object, path):
+  with open(path, 'wb') as f:
+      dump(object, f)
+
+def read_drive(path):
+  with open(path, 'rb') as f:
+      obj = load(f)
+  return obj
+
 def fit_rf(df, col_predictor):
     x = vstack(df[col_predictor].values)
     y = df['Label']
