@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 import torch
 import torch.nn as nn
 import torchvision.models as models
+import timm
 from tqdm import tqdm
 
 def store_drive(object, path):
