@@ -15,18 +15,23 @@ def read_drive(path):
       obj = load(f)
   return obj
 
-def fit_rf(df, col_predictor):
-    x = vstack(df[col_predictor].values)
-    y = df['Label']
+def predict_rf(df_train, df_pred, col):
+    x = vstack(df_train[col].values)
+    y = df_train['Label']
+
+    x_validation = vstack(df_pred[col].values)
 
     rf = RandomForestClassifier(random_state = random.seed(1234))
     rf.fit(x, y)
-    return rf
+    pred = rf.predict(x_validation)
+    pred_proba = rf.predict_proba(x_validation)
+    return pred, pred_proba
 
-def fit_nn(df, col_predictor, num_epochs = 10):
+def predict_nn(df_train, df_pred, col_predictor, num_epochs = 10):
   # Convert data to PyTorch tensors
-  x = torch.tensor(np.vstack(df[col_predictor].values), dtype=torch.float32)
-  y = torch.tensor(df['Label'].values, dtype=torch.long)
+  x_train = torch.tensor(np.vstack(df_train[col_predictor].values), dtype=torch.float32)
+  y_train = torch.tensor(df_train['Label'].values, dtype=torch.long)
+  x_pred = torch.tensor(np.vstack(df_pred[col_predictor].values), dtype=torch.float32)
 
   # Define a simple neural network
   class Net(nn.Module):
@@ -43,8 +48,8 @@ def fit_nn(df, col_predictor, num_epochs = 10):
       return x
 
   # Initialize the model, loss function, and optimizer
-  input_size = x.shape[1]
-  num_classes = len(df['Label'].unique())
+  input_size = X_train.shape[1]
+  num_classes = len(df_train['Label'].unique())
   model = Net(input_size, num_classes)
   criterion = nn.CrossEntropyLoss()
   optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -52,10 +57,14 @@ def fit_nn(df, col_predictor, num_epochs = 10):
   # Train the model
   for epoch in range(num_epochs):
     optimizer.zero_grad()
-    outputs = model(x)
-    loss = criterion(outputs, y)
+    outputs = model(x_train)
+    loss = criterion(outputs, y_train)
     loss.backward()
     optimizer.step()
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+
+  # Make predictions on the validation set
+  with torch.no_grad():
+    outputs = model(x_pred)
 
   return outputs
