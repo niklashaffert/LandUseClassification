@@ -6,10 +6,11 @@ import sys
 import torch
 import torch.nn as nn
 import torchvision.models as models
-import timm
 from tqdm import tqdm
 
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'timm'])
+
+import timm
 
 def store_drive(object, path):
   with open(path, 'wb') as f:
@@ -64,6 +65,9 @@ def fit_rf(df, col_predictor):
     return rf
 
 def fit_nn(df, col_predictor, num_epochs = 10):
+  torch.manual_seed(1234)
+  torch.cuda.manual_seed_all(1234) 
+  
   # Convert data to PyTorch tensors
   x = torch.tensor(np.vstack(df[col_predictor].values), dtype=torch.float32)
   y = torch.tensor(df['Label'].values, dtype=torch.long)
