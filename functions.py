@@ -58,3 +58,30 @@ def fit_rf(df, col_predictor):
     rf = RandomForestClassifier(random_state = np.random.seed(1234))
     rf.fit(x, y)
     return rf
+
+def negative_log_likelihood(y_true, y_pred):
+    # Ensure predictions are clipped to avoid log(0)
+    y_pred = np.clip(y_pred, 1e-15, 1 - 1e-15)
+    nll = -np.mean(np.log(y_pred[np.arange(len(y_true)), y_true]))
+    return nll
+
+def assess_prediction(df, col_pred, model):
+  # Compute the accuracy
+  accuracy = accuracy_score(df['Label'], df[col_pred])
+
+  # Get the confusion matrix
+  cm = confusion_matrix(df['Label'], df[col_pred])
+
+  # Create a mapping from Label -> Name
+  label_to_name = dict(zip(df['Label'], df['ClassName']))
+
+  # Sort class names based on unique labels
+  class_names = [label_to_name[label] for label in sorted(df['Label'].unique())]
+
+  # Display confusion matrix with correct order
+  disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+  disp.plot(cmap='viridis')
+
+  xticks(rotation=90)
+  title(f'{model}: Accuracy {accuracy:.3f}')
+  show()
