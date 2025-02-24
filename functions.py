@@ -1,16 +1,10 @@
 import numpy as np
 from pickle import dump, load
 from sklearn.ensemble import RandomForestClassifier
-import subprocess
-import sys
 import torch
 import torch.nn as nn
 import torchvision.models as models
 from tqdm import tqdm
-
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'timm'])
-
-import timm
 
 def store_drive(object, path):
   with open(path, 'wb') as f:
