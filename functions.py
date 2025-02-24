@@ -102,4 +102,4 @@ def fit_nn(df, col_predictor, num_epochs = 10):
     optimizer.step()
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
 
-  return outputs
+  return model
