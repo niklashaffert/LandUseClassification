@@ -9,7 +9,7 @@ import torchvision.models as models
 import timm
 from tqdm import tqdm
 
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'timm])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'timm'])
 
 def store_drive(object, path):
   with open(path, 'wb') as f:
